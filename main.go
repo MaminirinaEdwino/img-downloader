@@ -90,7 +90,7 @@ func main() {
 		}
 	}
 	extractImgSrc(doc)
-
+	fmt.Println(*targetURL)
 	fmt.Printf("Trouvé %d image(s) numérique(s) correspondante(s). Début du téléchargement...\n", len(imageUrls))
 
 	// 3. Télécharger les images en parallèle
@@ -108,7 +108,7 @@ func main() {
 			destPath := filepath.Join(*outputDir, filename)
 
 			if err := downloadFile(client, img, destPath); err != nil {
-				fmt.Printf("[%d/%d] Erreur (%s) : %v\n", index+1, len(imageUrls), img, err)
+				fmt.Printf("[%d/%d] Erreur (%s) : %v", index+1, len(imageUrls), img, err)
 			} else {
 				fmt.Printf("[%d/%d] Téléchargé : %s\n", index+1, len(imageUrls), filename)
 			}
@@ -116,6 +116,7 @@ func main() {
 	}
 
 	wg.Wait()
+	fmt.Println()
 	fmt.Println("Téléchargement terminé !")
 }
 
