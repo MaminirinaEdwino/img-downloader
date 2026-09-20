@@ -76,23 +76,12 @@ func main() {
 
 			if src != "" {
 				imgURL, err := url.Parse(src)
+				// fmt.Println(imgURL)
 				if err == nil {
 					absURL := baseURL.ResolveReference(imgURL).String()
 
 					// Extraire le nom de fichier sans paramètres d'URL (?v=...)
-					filename := filepath.Base(absURL)
-					if idx := strings.Index(filename, "?"); idx != -1 {
-						filename = filename[:idx]
-					}
-
-					// Extraire le nom sans son extension (ex: "14.webp" -> "14")
-					ext := filepath.Ext(filename)
-					nameOnly := strings.TrimSuffix(filename, ext)
-
-					// FILTRE : Conserver uniquement si le nom est un nombre
-					if numericFileNameRegex.MatchString(nameOnly) {
-						imageUrls = append(imageUrls, absURL)
-					}
+					imageUrls = append(imageUrls, absURL)
 				}
 			}
 		}
