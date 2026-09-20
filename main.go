@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"io"
 	"net/http"
@@ -19,16 +20,18 @@ import (
 var numericFileNameRegex = regexp.MustCompile(`^\d+$`)
 
 func main() {
-	targetURL := "https://sushiscan.fr/gachiakuta-chapitre-165/" // Remplacez par votre URL
-	outputDir := "./downloads/165"
+	targetURL := flag.String("link", "", "sushiscan link to a manga chapter") // Remplacez par votre URL
+	outputDir := flag.String("directory", "", "download directory")
 
-	if err := os.MkdirAll(outputDir, os.ModePerm); err != nil {
+	flag.Parse()
+
+	if err := os.MkdirAll(*outputDir, os.ModePerm); err != nil {
 		fmt.Printf("Erreur création dossier: %v\n", err)
 		return
 	}
 
 	// 1. Récupérer la page HTML
-	req, err := http.NewRequest("GET", targetURL, nil)
+	req, err := http.NewRequest("GET", *targetURL, nil)
 	if err != nil {
 		fmt.Printf("Erreur requête: %v\n", err)
 		return
@@ -43,7 +46,7 @@ func main() {
 	}
 	defer resp.Body.Close()
 
-	baseURL, err := url.Parse(targetURL)
+	baseURL, err := url.Parse(*targetURL)
 	if err != nil {
 		fmt.Printf("URL invalide: %v\n", err)
 		return
@@ -113,7 +116,7 @@ func main() {
 				filename = filename[:idx]
 			}
 
-			destPath := filepath.Join(outputDir, filename)
+			destPath := filepath.Join(*outputDir, filename)
 
 			if err := downloadFile(client, img, destPath); err != nil {
 				fmt.Printf("[%d/%d] Erreur (%s) : %v\n", index+1, len(imageUrls), img, err)
